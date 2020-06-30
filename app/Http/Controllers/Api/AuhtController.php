@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Support\Facades\Auth;
 
-class AuhtController extends Controller
+class AuhtController extends ApiController
 {
     //
     public function authenticate(Request $request)
@@ -37,5 +37,10 @@ class AuhtController extends Controller
             'token' => $tokenResult->accessToken,
             'user'   => $user->load('roles')
         ]);
+    }
+
+    public function perfil(Request $request){
+    	$user = Auth::user();
+    	return $this->showOne($user->load('roles'));
     }
 }

@@ -19,7 +19,14 @@ use Illuminate\Support\Facades\Route;
 });
 */
 
-Route::get('users','Api\UserController@index');
+
 Route::post('login','Api\AuhtController@authenticate');
 
-Route::apiResource('/demos','Demos\UserDemoController');
+Route::group(['middleware' => ['auth:api']], function () {
+
+	Route::get('users','Api\UserController@index');
+	Route::get('perfil','Api\AuhtController@perfil');
+
+});
+
+/*Route::apiResource('/demos','Demos\UserDemoController');*/
