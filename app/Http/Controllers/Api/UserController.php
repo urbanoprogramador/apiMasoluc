@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\User\UserStore;
+use App\Http\Resources\UserCollection;
 use App\Http\Controllers\ApiController;
 
 class UserController extends ApiController
@@ -12,10 +13,16 @@ class UserController extends ApiController
     //
 	public function index()
 	{
-		return $this->showArray(User::all());
+		return new UserCollection(User::with(['roles:id','socialNetwork','address'])->get());
+		return $this->showArray(User::with(['roles:id','socialNetwork','address'])->get());
 	}
 	public function show(User $user){
-		return $this->showOne($user);
+/*		$ur=$user->load(['roles:id','socialNetwork','address']);
+
+		$ur["roles"]=[$ur->roles[0]->id];
+
+		return $this->showArray($ur);*/
+		return $this->showOne($user->load(['roles:id','socialNetwork','address']));
 	}
 	public function store(UserStore $request){
 		$input=$request->inputs();

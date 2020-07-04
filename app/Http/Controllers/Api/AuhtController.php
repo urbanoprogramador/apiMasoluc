@@ -34,8 +34,8 @@ class AuhtController extends ApiController
         }
         $token->save();
         return response()->json([
-            'token' => $tokenResult->accessToken,
-            'user'   => $user->load('roles')
+            'accessToken' => $tokenResult->accessToken,
+            'user'   => $user->load(['roles','socialNetwork','address'])
         ]);
     }
 

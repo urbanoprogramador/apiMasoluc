@@ -3,11 +3,14 @@
 namespace App;
 
 use App\Models\Role;
+use App\Models\Address;
+use App\Models\SocialNetwork;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -19,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','pic','occupation','companyName','phone'
+        'fullname', 'email', 'password','pic','occupation','companyName','phone'
     ];
 
     /**
@@ -30,6 +33,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function getPicAttribute($value){
+        return secure_asset(Storage::url($value));
+    }
 
     /**
      * The attributes that should be cast to native types.
@@ -46,5 +53,11 @@ class User extends Authenticatable
 
     public function roles(){
         return $this->belongsToMany(Role::class);
+    }
+    public function socialNetwork(){
+        return $this->hasOne(SocialNetwork::class);
+    }
+    public function address(){
+        return $this->hasOne(Address::class);
     }
 }

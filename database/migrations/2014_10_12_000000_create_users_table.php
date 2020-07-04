@@ -15,15 +15,17 @@ class CreateUsersTable extends Migration
     {
         Schema::create('permissions',function(Blueprint $table){
             $table->smallIncrements('id');
-            $table->string('name',50);
-            $table->string('lavel',10);
-            $table->unsignedSmallInteger('parent_id');
+            $table->string('level',10);
+            $table->string('name');
+            $table->unsignedSmallInteger('parent_id')->nullable();
+            $table->timestamps();
             $table->string('title',50);
         });
         Schema::create('roles',function(Blueprint $table){
             $table->smallIncrements('id');
-            $table->string('role');
-            $table->string('description');
+            $table->string('title');
+            $table->boolean('is_core_role')->default(1);
+            /*$table->string('description');*/
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,7 +34,8 @@ class CreateUsersTable extends Migration
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('fullname');
+            $table->string('username')->unique();
             $table->string('pic')->nullable();
             $table->string('occupation');
             $table->string('companyName');
@@ -62,6 +65,27 @@ class CreateUsersTable extends Migration
             $table->foreign('role_id')->references('id')->on('roles');
             $table->foreign('permission_id')->references('id')->on('permissions');
         });
+        Schema::create('addresses',function(Blueprint $table){
+            $table->id();
+            $table->string('address_line');
+            $table->string('city');
+            $table->string('state');
+            $table->string('post_code');
+            $table->unsignedBigInteger('user_id');
+            $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users');
+        });
+        Schema::create('social_networks',function(Blueprint $table){
+            $table->id();
+            $table->string('linkedin');
+            $table->string('facebook');
+            $table->string('twitter');
+            $table->string('instagram');
+            $table->unsignedBigInteger('user_id');
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+        });
     }
 
     /**
@@ -71,6 +95,8 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('social_networks');
         Schema::dropIfExists('permission_role');
         Schema::dropIfExists('permissions');
         Schema::dropIfExists('roles_users');

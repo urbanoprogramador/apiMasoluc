@@ -9,8 +9,12 @@ class Permission extends Model
     //
     protected $fillable=[
     	'name',
-    	'lavel',
+    	'level',
     	'parent_id',
     	'title',
     ];
+
+    public function inpust(){
+    	return $this->fillable;
+    }
 }
